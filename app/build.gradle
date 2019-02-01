@@ -26,6 +26,7 @@ android {
 dependencies {
 
     final play_services_version = '16.0.0'
+    final timber_version = '4.7.1'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:28.0.0'
@@ -39,6 +40,9 @@ dependencies {
     implementation "com.google.android.gms:play-services-gcm:$play_services_version"
     implementation "com.google.android.gms:play-services-maps:$play_services_version"
     implementation "com.google.android.gms:play-services-location:$play_services_version"
+
+    // timber
+    implementation "com.jakewharton.timber:timber:$timber_version"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
