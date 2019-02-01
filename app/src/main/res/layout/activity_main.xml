@@ -15,4 +15,12 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <fragment
+        android:id="@+id/map_fragment"
+        android:layout_width="match_parent"
+        android:tag="map"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity"
+        android:name="com.google.android.gms.maps.SupportMapFragment"/>
+
 </android.support.constraint.ConstraintLayout>
