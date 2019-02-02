@@ -10,6 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.vladyslav.weatherforecast.network.model.Forecast;
+import com.example.vladyslav.weatherforecast.network.retrofit.WeatherApiClient;
+import com.example.vladyslav.weatherforecast.network.retrofit.WeatherService;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -22,15 +25,25 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.Observer;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
 
     @BindView(R.id.action_forecast) FloatingActionButton mActionForecast;
 
+    @Singleton
+    DataManager mDataManager = new DataManager();
     private SupportMapFragment mMapFragment;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private GoogleMap mMap;
@@ -49,6 +62,29 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @OnClick(R.id.action_forecast)
     public void onActionButtonClick(View view){
         Timber.d("Float button clicked!");
+        WeatherService mWeatherService = WeatherApiClient.getClient().create(WeatherService.class);
+        mWeatherService.getForecast(mDataManager.mCoordinates.latitude, mDataManager.mCoordinates.longitude)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Forecast>() {
+                    @Override public void onSubscribe(Disposable d) { /* No need */ }
+                    @Override public void onNext(Forecast forecast) {
+                        openForecastDetailScreen(forecast);
+                    }
+
+                    @Override public void onError(Throwable e) {
+                        //showError();
+                        Timber.d("Error!: [%s]", e.toString());
+                    }
+                    @Override public void onComplete() { /* No need */ }
+                });
+    }
+
+    void openForecastDetailScreen(Forecast forecast) {
+        Timber.d("%s", forecast.name);
+    }
+
+    void showError() {
+        Toast.makeText(this, "Turn ON Network Connection", Toast.LENGTH_LONG).show();
     }
 
     @Override public void onMapClick(LatLng latLng) {
@@ -57,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(latLng.latitude, latLng.longitude)).
                 icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).draggable(true));
+        mDataManager.mCoordinates = latLng;
 
     }
 
@@ -90,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mMarker = googleMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).
                             icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).draggable(true));
                     googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(),location.getLongitude())));
+
                 }
             }
         });

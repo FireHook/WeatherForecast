@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class Coord {
 
-    @SerializedName("lon") @Expose public Integer lon;
-    @SerializedName("lat") @Expose public Integer lat;
+    @SerializedName("lon") @Expose public double lon;
+    @SerializedName("lat") @Expose public double lat;
 
 }
