@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:src="@drawable/ic_action_forecast"
-        app:backgroundTint="@color/colorPrimary"
+        app:backgroundTint="@color/actionColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginBottom="40dp"

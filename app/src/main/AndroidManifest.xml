@@ -16,7 +16,8 @@
         android:theme="@style/AppTheme"
         android:hardwareAccelerated="true">
         <uses-library android:name="org.apache.http.legacy" android:required="false" />
-        <activity android:name=".mvp.view.MainActivity">
+        <activity android:name=".mvp.view.MainActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

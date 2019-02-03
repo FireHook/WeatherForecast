@@ -40,4 +40,7 @@ public class MapPresenter extends MvpPresenter<MapView> {
                 });
     }
 
+    public void initMap() {
+        getViewState().loadMap();
+    }
 }

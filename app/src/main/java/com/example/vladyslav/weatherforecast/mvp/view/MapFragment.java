@@ -66,9 +66,8 @@ public class MapFragment extends MvpAppCompatFragment implements MapView, OnMapR
 
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mMapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map_fragment);
-        Timber.d("%s", mMapFragment);
-        mMapFragment.getMapAsync(this);
+        mMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_fragment);
+        mPresenter.initMap();
     }
 
     @Override public void onMapReady(GoogleMap googleMap) {
@@ -90,7 +89,7 @@ public class MapFragment extends MvpAppCompatFragment implements MapView, OnMapR
                 mMarker = googleMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).
                         icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).draggable(true));
                 googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(),location.getLongitude())));
-
+                mPresenter.setCoordinates(new LatLng(location.getLatitude(), location.getLongitude()));
             }
         });
     }
@@ -106,6 +105,7 @@ public class MapFragment extends MvpAppCompatFragment implements MapView, OnMapR
     @OnClick(R.id.action_forecast)
     public void onActionButtonClick(View view) {
         mPresenter.loadForecast();
+        if (mMarker != null) mMarker.remove();
     }
 
     @Override public void openForecastDetailScreen(Root root) {
@@ -114,7 +114,12 @@ public class MapFragment extends MvpAppCompatFragment implements MapView, OnMapR
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.content_frame, ForecastDetailFragment.newInstance(root), ForecastDetailFragment.class.getSimpleName())
+                    .addToBackStack(ForecastDetailFragment.class.getSimpleName())
                     .commit();
+    }
+
+    @Override public void loadMap() {
+        mMapFragment.getMapAsync(this);
     }
 
     @Override public void showToastText(String message) {
