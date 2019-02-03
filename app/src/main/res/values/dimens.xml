@@ -2,4 +2,7 @@
 <resources>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="day_temp_size">48dp</dimen>
+    <dimen name="night_temp_size">24dp</dimen>
+    <dimen name="date_size">20dp</dimen>
 </resources>

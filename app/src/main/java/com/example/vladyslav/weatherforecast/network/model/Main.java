@@ -5,10 +5,12 @@ import com.google.gson.annotations.SerializedName;
 
 public class Main {
 
-    @SerializedName("temp")     @Expose public Double temp;
-    @SerializedName("humidity") @Expose public Integer humidity;
-    @SerializedName("pressure") @Expose public Integer pressure;
-    @SerializedName("temp_min") @Expose public Double tempMin;
-    @SerializedName("temp_max") @Expose public Double tempMax;
+    @SerializedName("temp")       @Expose public Double temp;
+    @SerializedName("humidity")   @Expose public double humidity;
+    @SerializedName("pressure")   @Expose public double pressure;
+    @SerializedName("temp_min")   @Expose public Double tempMin;
+    @SerializedName("temp_max")   @Expose public Double tempMax;
+    @SerializedName("sea_level")  @Expose public Double seaLevel;
+    @SerializedName("grnd_level") @Expose public Double grndLevel;
 
 }

@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import com.example.vladyslav.weatherforecast.network.model.Forecast;
+import com.example.vladyslav.weatherforecast.network.model.Root;
 import com.example.vladyslav.weatherforecast.network.retrofit.WeatherApiClient;
 import com.example.vladyslav.weatherforecast.network.retrofit.WeatherService;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -27,6 +28,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+
+import java.util.TooManyListenersException;
+
 import javax.inject.Singleton;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,7 +61,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mMapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.map_fragment);
+        mMapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map_fragment);
+        Timber.d("%s", mMapFragment);
         mMapFragment.getMapAsync(this);
     }
 
@@ -70,7 +75,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(getContext(), "Turn ON Location Services", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "Turn ON Location permission for the Weather Forecast App", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -102,20 +107,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         WeatherService mWeatherService = WeatherApiClient.getClient().create(WeatherService.class);
         mWeatherService.getForecast(mDataManager.mCoordinates.latitude, mDataManager.mCoordinates.longitude)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Forecast>() {
+                .subscribe(new Observer<Root>() {
                     @Override public void onSubscribe(Disposable d) { /* No need */ }
-                    @Override public void onNext(Forecast forecast) { openForecastDetailScreen(forecast); }
-                    @Override public void onError(Throwable e) { showError(); }
+                    @Override public void onNext(Root root) { openForecastDetailScreen(root); }
+                    @Override public void onError(Throwable e) { showError(); Timber.d(e); }
                     @Override public void onComplete() { /* No need */ }
                 });
     }
 
-    void openForecastDetailScreen(Forecast forecast) {
-        Timber.d("%s", forecast.name);
+    void openForecastDetailScreen(Root root) {
+        Timber.d("%s", root.city.name);
         if (getActivity() != null)
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.content_frame, ForecastDetailFragment.newInstance(forecast), ForecastDetailFragment.class.getSimpleName())
+                    .replace(R.id.content_frame, ForecastDetailFragment.newInstance(root), ForecastDetailFragment.class.getSimpleName())
                     .commit();
     }
 
