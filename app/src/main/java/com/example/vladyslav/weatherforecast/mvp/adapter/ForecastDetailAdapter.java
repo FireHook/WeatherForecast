@@ -58,6 +58,9 @@ public class ForecastDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         holder.mDayTempText.setText(new StringBuilder().append(forecast.getDayTemperature()).append(degree));
         holder.mNightTempText.setText(new StringBuilder().append(forecast.getNightTemperature()).append(degree));
         holder.mMainDescText.setText(forecast.getDescription());
+        String drawableName = "d" + forecast.getIcon().substring(0, 2);
+        int resID = holder.mMainImage.getResources().getIdentifier(drawableName, "drawable", holder.mMainImage.getContext().getPackageName());
+        holder.mMainImage.setImageResource(resID);
 
     }
 
@@ -67,6 +70,9 @@ public class ForecastDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         holder.mSecondaryDayTemp.setText(forecast.getDayTemperature());
         holder.mSecondaryNightTemp.setText(forecast.getNightTemperature());
         holder.mSecondaryDesc.setText(forecast.getDescription());
+        String drawableName = "d" + forecast.getIcon().substring(0, 2);
+        int resID = holder.mSecondaryImage.getResources().getIdentifier(drawableName, "drawable", holder.mSecondaryImage.getContext().getPackageName());
+        holder.mSecondaryImage.setImageResource(resID);
     }
 
     @Override

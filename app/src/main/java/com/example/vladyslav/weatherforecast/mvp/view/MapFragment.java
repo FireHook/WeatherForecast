@@ -2,13 +2,11 @@ package com.example.vladyslav.weatherforecast.mvp.view;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +14,10 @@ import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
-import com.example.vladyslav.weatherforecast.mvp.model.DataManager;
 import com.example.vladyslav.weatherforecast.R;
+import com.example.vladyslav.weatherforecast.mvp.model.DataManager;
 import com.example.vladyslav.weatherforecast.mvp.presenter.MapPresenter;
 import com.example.vladyslav.weatherforecast.network.model.Root;
-import com.example.vladyslav.weatherforecast.network.retrofit.WeatherApiClient;
-import com.example.vladyslav.weatherforecast.network.retrofit.WeatherService;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -32,23 +28,17 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
 
-import javax.inject.Singleton;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class MapFragment extends MvpAppCompatFragment implements MapView, OnMapReadyCallback, GoogleMap.OnMapClickListener{
 
     @BindView(R.id.action_forecast) FloatingActionButton mActionForecast;
 
-    @Singleton DataManager mDataManager = new DataManager();
+    DataManager mDataManager = new DataManager();
 
     @InjectPresenter MapPresenter mPresenter;
 
