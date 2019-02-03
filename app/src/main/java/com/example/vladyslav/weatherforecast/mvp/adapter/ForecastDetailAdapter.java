@@ -61,6 +61,7 @@ public class ForecastDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         String drawableName = "d" + forecast.getIcon().substring(0, 2);
         int resID = holder.mMainImage.getResources().getIdentifier(drawableName, "drawable", holder.mMainImage.getContext().getPackageName());
         holder.mMainImage.setImageResource(resID);
+        holder.mCityText.setText(forecast.getCity());
 
     }
 
@@ -95,6 +96,7 @@ public class ForecastDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         @BindView(R.id.night_temp_text)       TextView mNightTempText;
         @BindView(R.id.main_description_text) TextView mMainDescText;
         @BindView(R.id.main_image)            ImageView mMainImage;
+        @BindView(R.id.city_name_text)        TextView mCityText;
 
         public ViewHolder0(@NonNull View itemView) {
             super(itemView);

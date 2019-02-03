@@ -77,8 +77,10 @@ public class ForecastDetailPresenter extends MvpPresenter<ForecastDetailView> {
             }
             forecastToAdapter.setDayTemperature(String.valueOf(sortedForecast.get(i).main.temp.intValue() - 273));
             forecastToAdapter.setNightTemperature(String.valueOf(sortedForecast.get(i+1).main.temp.intValue() - 273));
-            forecastToAdapter.setDescription(sortedForecast.get(i).weather.get(0).description);
+            String description = sortedForecast.get(i).weather.get(0).description;
+            forecastToAdapter.setDescription(description.substring(0, 1).toUpperCase().concat(description.substring(1)));
             forecastToAdapter.setIcon(sortedForecast.get(i).weather.get(0).icon);
+            forecastToAdapter.setCity(mRoot.city.name.concat(", ").concat(mRoot.city.country));
             list.add(forecastToAdapter);
         }
         return list;

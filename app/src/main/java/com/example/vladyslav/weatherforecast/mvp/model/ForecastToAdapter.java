@@ -2,19 +2,19 @@ package com.example.vladyslav.weatherforecast.mvp.model;
 
 public class ForecastToAdapter {
 
-    private int dayId;
+    private String city;
     private String date;
     private String dayTemperature;
     private String nightTemperature;
     private String description;
     private String icon;
 
-    public int getDayId() {
-        return dayId;
+    public String getCity() {
+        return city;
     }
 
-    public void setDayId(int dayId) {
-        this.dayId = dayId;
+    public void setCity(String city) {
+        this.city = city;
     }
 
     public String getDate() {
