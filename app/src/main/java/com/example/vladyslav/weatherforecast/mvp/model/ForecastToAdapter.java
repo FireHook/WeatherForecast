@@ -1,4 +1,4 @@
-package com.example.vladyslav.weatherforecast.network.model;
+package com.example.vladyslav.weatherforecast.mvp.model;
 
 public class ForecastToAdapter {
 

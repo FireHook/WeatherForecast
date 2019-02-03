@@ -1,4 +1,4 @@
-package com.example.vladyslav.weatherforecast;
+package com.example.vladyslav.weatherforecast.mvp.view;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,8 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.arellomobile.mvp.MvpAppCompatFragment;
+import com.example.vladyslav.weatherforecast.mvp.adapter.ForecastDetailAdapter;
+import com.example.vladyslav.weatherforecast.R;
 import com.example.vladyslav.weatherforecast.network.model.Forecast;
-import com.example.vladyslav.weatherforecast.network.model.ForecastToAdapter;
+import com.example.vladyslav.weatherforecast.mvp.model.ForecastToAdapter;
 import com.example.vladyslav.weatherforecast.network.model.Root;
 
 import java.text.ParseException;
@@ -26,7 +29,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
-public class ForecastDetailFragment extends Fragment {
+public class ForecastDetailFragment extends MvpAppCompatFragment implements ForecastDetailView {
 
     @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
 

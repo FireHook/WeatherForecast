@@ -1,6 +1,5 @@
-package com.example.vladyslav.weatherforecast;
+package com.example.vladyslav.weatherforecast.mvp.adapter;
 
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,14 +8,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.vladyslav.weatherforecast.network.model.Forecast;
-import com.example.vladyslav.weatherforecast.network.model.ForecastToAdapter;
+import com.example.vladyslav.weatherforecast.R;
+import com.example.vladyslav.weatherforecast.mvp.model.ForecastToAdapter;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 public class ForecastDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 

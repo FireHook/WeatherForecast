@@ -1,4 +1,4 @@
-package com.example.vladyslav.weatherforecast;
+package com.example.vladyslav.weatherforecast.mvp.view;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -13,7 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-import com.example.vladyslav.weatherforecast.network.model.Forecast;
+
+import com.arellomobile.mvp.MvpAppCompatFragment;
+import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.example.vladyslav.weatherforecast.mvp.model.DataManager;
+import com.example.vladyslav.weatherforecast.R;
+import com.example.vladyslav.weatherforecast.mvp.presenter.MapPresenter;
 import com.example.vladyslav.weatherforecast.network.model.Root;
 import com.example.vladyslav.weatherforecast.network.retrofit.WeatherApiClient;
 import com.example.vladyslav.weatherforecast.network.retrofit.WeatherService;
@@ -29,8 +34,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import java.util.TooManyListenersException;
-
 import javax.inject.Singleton;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,11 +44,13 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapClickListener{
+public class MapFragment extends MvpAppCompatFragment implements MapView, OnMapReadyCallback, GoogleMap.OnMapClickListener{
 
     @BindView(R.id.action_forecast) FloatingActionButton mActionForecast;
 
     @Singleton DataManager mDataManager = new DataManager();
+
+    @InjectPresenter MapPresenter mPresenter;
 
     private SupportMapFragment mMapFragment;
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -79,16 +84,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             return;
         }
 
-        mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                if (location != null) {
-                    Timber.d("%s, %s", location.getLatitude(), location.getLongitude());
-                    mMarker = googleMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).
-                            icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).draggable(true));
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(),location.getLongitude())));
+        mFusedLocationProviderClient.getLastLocation().addOnSuccessListener( location -> {
+            if (location != null) {
+                Timber.d("%s, %s", location.getLatitude(), location.getLongitude());
+                mMarker = googleMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).
+                        icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).draggable(true));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(),location.getLongitude())));
 
-                }
             }
         });
     }
@@ -98,24 +100,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
         mMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(latLng.latitude, latLng.longitude)).
                 icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).draggable(true));
-        mDataManager.mCoordinates = latLng;
+        mPresenter.setCoordinates(latLng);
     }
 
     @OnClick(R.id.action_forecast)
     public void onActionButtonClick(View view) {
-
-        WeatherService mWeatherService = WeatherApiClient.getClient().create(WeatherService.class);
-        mWeatherService.getForecast(mDataManager.mCoordinates.latitude, mDataManager.mCoordinates.longitude)
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Root>() {
-                    @Override public void onSubscribe(Disposable d) { /* No need */ }
-                    @Override public void onNext(Root root) { openForecastDetailScreen(root); }
-                    @Override public void onError(Throwable e) { showError(); Timber.d(e); }
-                    @Override public void onComplete() { /* No need */ }
-                });
+        mPresenter.loadForecast();
     }
 
-    void openForecastDetailScreen(Root root) {
+    @Override public void openForecastDetailScreen(Root root) {
         Timber.d("%s", root.city.name);
         if (getActivity() != null)
             getActivity().getSupportFragmentManager()
@@ -124,6 +117,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     .commit();
     }
 
-    void showError() { Toast.makeText(getContext(), "Turn ON Network Connection", Toast.LENGTH_LONG).show(); }
-
+    @Override public void showToastText(String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+    }
 }
