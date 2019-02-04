@@ -122,7 +122,7 @@ public class WeatherManager {
         for (int i = 0; i < sortedForecast.size() - 1; i += 2) {
 
             ForecastItem forecastItem = new ForecastItem();
-            SimpleDateFormat monthAndDay = new SimpleDateFormat("MMMM d", Locale.US);
+            SimpleDateFormat monthAndDay = new SimpleDateFormat("MMM d", Locale.US);
             if (convertedForecasts.isEmpty()) {
                 forecastItem.setDate(monthAndDay.format(Calendar.getInstance().getTime()));
             } else {

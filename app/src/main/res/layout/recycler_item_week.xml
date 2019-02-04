@@ -26,19 +26,21 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
+        android:text="Day of week"
         android:textSize="@dimen/date_size"
         app:layout_constraintStart_toEndOf="@+id/secondary_image"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/secondary_description_text"
-        android:layout_width="145dp"
+        android:layout_width="197dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:text="Conditions"
         android:textSize="@dimen/date_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/secondary_image"
@@ -48,26 +50,30 @@
         android:id="@+id/secondary_day_temp"
         android:layout_width="76dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="end"
         android:layout_marginEnd="52dp"
         android:layout_marginRight="52dp"
         android:layout_marginTop="16dp"
-        android:textSize="@dimen/date_size"
+        android:text="20"
         android:textAlignment="textEnd"
+        android:textSize="@dimen/date_size"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_gravity="end" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/secondary_night_temp"
         android:layout_width="76dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginBottom="16dp"
         android:layout_marginEnd="52dp"
         android:layout_marginRight="52dp"
         android:layout_marginTop="8dp"
-        android:textSize="@dimen/date_size"
+        android:text="10"
         android:textAlignment="textEnd"
+        android:textSize="@dimen/date_size"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/secondary_day_temp"
-        android:layout_gravity="end" />
+        app:layout_constraintTop_toBottomOf="@+id/secondary_day_temp" />
 
 </android.support.constraint.ConstraintLayout>
