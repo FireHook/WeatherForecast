@@ -7,9 +7,7 @@ import java.util.Locale;
 
 import timber.log.Timber;
 
-public class CrashReportingTree extends Timber.DebugTree{
-
-    public CrashReportingTree(){ }
+public class MyTimberTree extends Timber.DebugTree {
 
     @Override
     protected @Nullable String createStackElementTag(@NotNull StackTraceElement element) {

@@ -1,11 +1,9 @@
 package com.example.vladyslav.weatherforecast.network.retrofit;
 
-import com.example.vladyslav.weatherforecast.network.model.Forecast;
 import com.example.vladyslav.weatherforecast.network.model.Root;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface WeatherService {

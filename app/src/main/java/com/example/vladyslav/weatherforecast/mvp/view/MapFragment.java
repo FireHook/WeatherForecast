@@ -15,7 +15,6 @@ import android.widget.Toast;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.example.vladyslav.weatherforecast.R;
-import com.example.vladyslav.weatherforecast.mvp.model.DataManager;
 import com.example.vladyslav.weatherforecast.mvp.presenter.MapPresenter;
 import com.example.vladyslav.weatherforecast.network.model.Root;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -37,8 +36,6 @@ import timber.log.Timber;
 public class MapFragment extends MvpAppCompatFragment implements MapView, OnMapReadyCallback, GoogleMap.OnMapClickListener{
 
     @BindView(R.id.action_forecast) FloatingActionButton mActionForecast;
-
-    DataManager mDataManager = new DataManager();
 
     @InjectPresenter MapPresenter mPresenter;
 
@@ -69,7 +66,6 @@ public class MapFragment extends MvpAppCompatFragment implements MapView, OnMapR
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(getContext(), "Turn ON Location permission for the Weather Forecast App", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -79,6 +75,7 @@ public class MapFragment extends MvpAppCompatFragment implements MapView, OnMapR
                 mMarker = googleMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).
                         icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).draggable(true));
                 googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(),location.getLongitude())));
+                googleMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
                 mPresenter.setCoordinates(new LatLng(location.getLatitude(), location.getLongitude()));
             }
         });
@@ -93,7 +90,7 @@ public class MapFragment extends MvpAppCompatFragment implements MapView, OnMapR
     }
 
     @OnClick(R.id.action_forecast)
-    public void onActionButtonClick(View view) {
+    public void onActionButtonClick() {
         mPresenter.loadForecast();
         if (mMarker != null) mMarker.remove();
     }
@@ -112,7 +109,7 @@ public class MapFragment extends MvpAppCompatFragment implements MapView, OnMapR
         mMapFragment.getMapAsync(this);
     }
 
-    @Override public void showToastText(String message) {
+    @Override public void showToastText(int message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
     }
 }

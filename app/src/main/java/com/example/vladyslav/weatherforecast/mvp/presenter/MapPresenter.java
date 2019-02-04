@@ -2,6 +2,7 @@ package com.example.vladyslav.weatherforecast.mvp.presenter;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import com.example.vladyslav.weatherforecast.R;
 import com.example.vladyslav.weatherforecast.mvp.view.MapView;
 import com.example.vladyslav.weatherforecast.network.model.Root;
 import com.example.vladyslav.weatherforecast.network.retrofit.WeatherApiClient;
@@ -12,7 +13,6 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import timber.log.Timber;
 
 @InjectViewState
 public class MapPresenter extends MvpPresenter<MapView> {
@@ -35,7 +35,7 @@ public class MapPresenter extends MvpPresenter<MapView> {
                 .subscribe(new Observer<Root>() {
                     @Override public void onSubscribe(Disposable d) { /* No need */ }
                     @Override public void onNext(Root root) { getViewState().openForecastDetailScreen(root); }
-                    @Override public void onError(Throwable e) { getViewState().showToastText("Turn ON Network Connection"); }
+                    @Override public void onError(Throwable e) { getViewState().showToastText(R.string.network_error); }
                     @Override public void onComplete() { /* No need */ }
                 });
     }

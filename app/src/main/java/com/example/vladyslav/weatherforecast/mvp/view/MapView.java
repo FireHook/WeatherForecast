@@ -9,5 +9,5 @@ import com.example.vladyslav.weatherforecast.network.model.Root;
 public interface MapView extends MvpView {
     void openForecastDetailScreen(Root root);
     void loadMap();
-    void showToastText(String message);
+    void showToastText(int message);
 }

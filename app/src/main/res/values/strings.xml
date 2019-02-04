@@ -5,5 +5,6 @@
     <string name="temperature">Temperature</string>
     <string name="condition">Condition</string>
     <string name="location">Location</string>
-    <string name="today">Today, </string>
+    <string name="today">Today, %1$S</string>
+    <string name="network_error">Turn ON Network Connection</string>
 </resources>

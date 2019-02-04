@@ -4,6 +4,7 @@ import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.example.vladyslav.weatherforecast.mvp.model.ForecastToAdapter;
 import com.example.vladyslav.weatherforecast.mvp.view.ForecastDetailView;
+import com.example.vladyslav.weatherforecast.network.model.City;
 import com.example.vladyslav.weatherforecast.network.model.Forecast;
 import com.example.vladyslav.weatherforecast.network.model.Root;
 
@@ -24,7 +25,7 @@ public class ForecastDetailPresenter extends MvpPresenter<ForecastDetailView> {
 
     public void setRoot(Root root) {
         this.mRoot = root;
-        getViewState().initRecyclerAdapter(migrateForecastToAdapter(sortForecasts(mRoot.list)));
+        getViewState().initRecyclerAdapter(migrateForecastToAdapter(sortForecasts(mRoot.list), mRoot.city));
     }
 
     List<Forecast> sortForecasts(List<Forecast> forecastList) {
@@ -56,7 +57,7 @@ public class ForecastDetailPresenter extends MvpPresenter<ForecastDetailView> {
         return list;
     }
 
-    List<ForecastToAdapter> migrateForecastToAdapter(List<Forecast> sortedForecast) {
+    List<ForecastToAdapter> migrateForecastToAdapter(List<Forecast> sortedForecast, City city) {
         List<ForecastToAdapter> list = new ArrayList<>();
 
         for (int i = 0; i < sortedForecast.size() - 1; i+=2) {
@@ -80,7 +81,8 @@ public class ForecastDetailPresenter extends MvpPresenter<ForecastDetailView> {
             String description = sortedForecast.get(i).weather.get(0).description;
             forecastToAdapter.setDescription(description.substring(0, 1).toUpperCase().concat(description.substring(1)));
             forecastToAdapter.setIcon(sortedForecast.get(i).weather.get(0).icon);
-            forecastToAdapter.setCity(mRoot.city.name.concat(", ").concat(mRoot.city.country));
+            if (city.country != null && city.name != null)
+                forecastToAdapter.setCity(city.name.concat(", ").concat(city.country));
             list.add(forecastToAdapter);
         }
         return list;
