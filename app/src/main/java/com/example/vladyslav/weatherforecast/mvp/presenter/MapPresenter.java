@@ -2,12 +2,12 @@ package com.example.vladyslav.weatherforecast.mvp.presenter;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.example.vladyslav.weatherforecast.R;
+import com.example.vladyslav.weatherforecast.WeatherApp;
+import com.example.vladyslav.weatherforecast.WeatherManager;
 import com.example.vladyslav.weatherforecast.mvp.view.MapView;
-import com.example.vladyslav.weatherforecast.network.model.Root;
-import com.example.vladyslav.weatherforecast.network.retrofit.WeatherApiClient;
-import com.example.vladyslav.weatherforecast.network.retrofit.WeatherService;
 import com.google.android.gms.maps.model.LatLng;
+
+import javax.inject.Inject;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -17,30 +17,32 @@ import io.reactivex.schedulers.Schedulers;
 @InjectViewState
 public class MapPresenter extends MvpPresenter<MapView> {
 
-    private LatLng mCoordinates;
+    @Inject WeatherManager mWeatherManager;
 
-    public MapPresenter() { }
-
-    public void setCoordinates(LatLng coordinates) {
-        this.mCoordinates = new LatLng(coordinates.latitude, coordinates.longitude);
+    public MapPresenter() {
+        WeatherApp.sAppComponent.inject(this);
     }
 
-    public void loadForecast() {
-
-        if (mCoordinates == null) return;
-
-        WeatherService mWeatherService = WeatherApiClient.getClient().create(WeatherService.class);
-        mWeatherService.getForecast(mCoordinates.latitude, mCoordinates.longitude)
+    public void showMarker() {
+        mWeatherManager.getSavedLocation()
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Root>() {
-                    @Override public void onSubscribe(Disposable d) { /* No need */ }
-                    @Override public void onNext(Root root) { getViewState().openForecastDetailScreen(root); }
-                    @Override public void onError(Throwable e) { getViewState().showToastText(R.string.network_error); }
-                    @Override public void onComplete() { /* No need */ }
+                .subscribe(new Observer<LatLng>() {
+                    @Override public void onSubscribe(Disposable d) { }
+                    @Override public void onNext(LatLng latLng) {
+                        getViewState().drawMarker(latLng);
+                    }
+                    @Override public void onError(Throwable e) {
+
+                    }
+                    @Override public void onComplete() { }
                 });
     }
 
-    public void initMap() {
-        getViewState().loadMap();
+    public void saveCoordinates(LatLng latLng) {
+        mWeatherManager.saveLocation(latLng);
+    }
+
+    public void openForecast() {
+        getViewState().openForecastDetailScreen();
     }
 }

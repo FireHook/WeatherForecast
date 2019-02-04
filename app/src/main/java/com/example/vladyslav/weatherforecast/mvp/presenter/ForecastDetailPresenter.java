@@ -2,89 +2,53 @@ package com.example.vladyslav.weatherforecast.mvp.presenter;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.example.vladyslav.weatherforecast.mvp.model.ForecastToAdapter;
+import com.example.vladyslav.weatherforecast.WeatherApp;
+import com.example.vladyslav.weatherforecast.WeatherManager;
+import com.example.vladyslav.weatherforecast.mvp.model.ForecastItem;
 import com.example.vladyslav.weatherforecast.mvp.view.ForecastDetailView;
-import com.example.vladyslav.weatherforecast.network.model.City;
-import com.example.vladyslav.weatherforecast.network.model.Forecast;
-import com.example.vladyslav.weatherforecast.network.model.Root;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
+
+import javax.inject.Inject;
+
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 @InjectViewState
 public class ForecastDetailPresenter extends MvpPresenter<ForecastDetailView> {
 
-    private Root mRoot;
+    @Inject WeatherManager mWeatherManager;
 
-    public  ForecastDetailPresenter() { }
-
-    public void setRoot(Root root) {
-        this.mRoot = root;
-        getViewState().initRecyclerAdapter(migrateForecastToAdapter(sortForecasts(mRoot.list), mRoot.city));
+    public  ForecastDetailPresenter() {
+        WeatherApp.sAppComponent.inject(this);
     }
 
-    List<Forecast> sortForecasts(List<Forecast> forecastList) {
 
-        List<Forecast> list = new ArrayList<>();
 
-        for (Forecast forecast : forecastList) {
+    public void loadForecast() {
+        mWeatherManager.loadForecast().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<ForecastItem>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-            try {
-                if (new Date().after(new SimpleDateFormat("HH:mm").parse("12:00"))) {
-                    if (list.isEmpty()) {
-                        list.add(forecast);
-                    } else {
-                        String trimedDate = forecast.dtTxt.substring(forecast.dtTxt.lastIndexOf(" ") + 1);
-                        if (trimedDate.equals("00:00:00") ||
-                                trimedDate.equals("12:00:00")) {
-                            list.add(forecast);
-                        }
                     }
-                } else {
-                    String trimedDate = forecast.dtTxt.substring(forecast.dtTxt.lastIndexOf(" ") + 1);
-                    if (trimedDate.equals("00:00:00") ||
-                            trimedDate.equals("12:00:00")) {
-                        list.add(forecast);
+
+                    @Override
+                    public void onNext(List<ForecastItem> forecastItems) {
+                        getViewState().initRecyclerAdapter(forecastItems);
                     }
-                }
-            } catch (ParseException e) { e.printStackTrace(); }
-        }
-        return list;
-    }
 
-    List<ForecastToAdapter> migrateForecastToAdapter(List<Forecast> sortedForecast, City city) {
-        List<ForecastToAdapter> list = new ArrayList<>();
+                    @Override
+                    public void onError(Throwable e) {
 
-        for (int i = 0; i < sortedForecast.size() - 1; i+=2) {
-            ForecastToAdapter forecastToAdapter = new ForecastToAdapter();
-            SimpleDateFormat monthAndDay = new SimpleDateFormat("MMM d");
-            if (list.isEmpty()) {
-                forecastToAdapter.setDate(monthAndDay.format(Calendar.getInstance().getTime()));
-            } else {
-                String trimedDate = sortedForecast.get(i).dtTxt.substring(0, sortedForecast.get(i).dtTxt.indexOf(" "));
-                SimpleDateFormat forma=new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-                Date d = null;
-                try {
-                    d = forma.parse(trimedDate);
-                } catch (ParseException e) { e.printStackTrace(); }
+                    }
 
-                String res = new SimpleDateFormat("EEEE", Locale.US).format(d);
-                forecastToAdapter.setDate(res);
-            }
-            forecastToAdapter.setDayTemperature(String.valueOf(sortedForecast.get(i).main.temp.intValue() - 273));
-            forecastToAdapter.setNightTemperature(String.valueOf(sortedForecast.get(i+1).main.temp.intValue() - 273));
-            String description = sortedForecast.get(i).weather.get(0).description;
-            forecastToAdapter.setDescription(description.substring(0, 1).toUpperCase().concat(description.substring(1)));
-            forecastToAdapter.setIcon(sortedForecast.get(i).weather.get(0).icon);
-            if (city.country != null && city.name != null)
-                forecastToAdapter.setCity(city.name.concat(", ").concat(city.country));
-            list.add(forecastToAdapter);
-        }
-        return list;
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 }

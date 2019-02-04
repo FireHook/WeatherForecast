@@ -7,8 +7,6 @@ import com.example.vladyslav.weatherforecast.mvp.view.MainView;
 @InjectViewState
 public class MainPresenter extends MvpPresenter<MainView> {
 
-    public MainPresenter() { }
-
     public void showMap() {
         getViewState().openMapScreen();
     }

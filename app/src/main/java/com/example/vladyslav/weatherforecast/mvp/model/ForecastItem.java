@@ -1,6 +1,6 @@
 package com.example.vladyslav.weatherforecast.mvp.model;
 
-public class ForecastToAdapter {
+public class ForecastItem {
 
     private String city;
     private String date;

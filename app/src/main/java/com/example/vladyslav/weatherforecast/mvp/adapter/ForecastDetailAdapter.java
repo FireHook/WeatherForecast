@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.example.vladyslav.weatherforecast.R;
 import com.example.vladyslav.weatherforecast.Utils;
-import com.example.vladyslav.weatherforecast.mvp.model.ForecastToAdapter;
+import com.example.vladyslav.weatherforecast.mvp.model.ForecastItem;
 
 import java.util.List;
 
@@ -21,10 +21,11 @@ public class ForecastDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private static final int TODAY_FORECAST = 0;
     private static final int FUTURE_FORECAST = 1;
+    private static final int MAX_DAYS_FORECAST = 5;
 
-    private List<ForecastToAdapter> mForecastList;
+    private List<ForecastItem> mForecastList;
 
-    public ForecastDetailAdapter(List<ForecastToAdapter> forecasts) {
+    public ForecastDetailAdapter(List<ForecastItem> forecasts) {
         mForecastList = forecasts;
     }
 
@@ -36,7 +37,7 @@ public class ForecastDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             case FUTURE_FORECAST:
                 return new ViewHolderFutureForecast(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_item_week, viewGroup, false));
             default:
-                return new ViewHolderTodayForecast(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_item_today, viewGroup, false));
+                return new ViewHolderFutureForecast(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_item_week, viewGroup, false));
 
         }
     }
@@ -56,7 +57,7 @@ public class ForecastDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     private void bindUpperViewHolder(ViewHolderTodayForecast holder, int position) {
-        ForecastToAdapter forecast = mForecastList.get(position);
+        ForecastItem forecast = mForecastList.get(position);
         holder.mDateText.setText(holder.mDateText.getContext().getString(R.string.today, forecast.getDate()));
         String degree = (char) 0x00B0 + "C";
         holder.mDayTempText.setText(new StringBuilder().append(forecast.getDayTemperature()).append(degree));
@@ -68,7 +69,7 @@ public class ForecastDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     private void bindLowerViewHolder(ViewHolderFutureForecast holder, int position) {
-        ForecastToAdapter forecast = mForecastList.get(position);
+        ForecastItem forecast = mForecastList.get(position);
         holder.mDayNameText.setText(forecast.getDate());
         holder.mSecondaryDayTemp.setText(forecast.getDayTemperature());
         holder.mSecondaryNightTemp.setText(forecast.getNightTemperature());
@@ -83,7 +84,7 @@ public class ForecastDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemCount() {
-        return 5;
+        return MAX_DAYS_FORECAST;
     }
 
     public class ViewHolderTodayForecast extends RecyclerView.ViewHolder {
@@ -95,7 +96,7 @@ public class ForecastDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         @BindView(R.id.main_image)            ImageView mMainImage;
         @BindView(R.id.city_name_text)        TextView mCityText;
 
-        public ViewHolderTodayForecast(@NonNull View itemView) {
+        ViewHolderTodayForecast(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
@@ -109,7 +110,7 @@ public class ForecastDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         @BindView(R.id.secondary_day_temp)         TextView mSecondaryDayTemp;
         @BindView(R.id.secondary_night_temp)       TextView mSecondaryNightTemp;
 
-        public ViewHolderFutureForecast(@NonNull View itemView) {
+        ViewHolderFutureForecast(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
