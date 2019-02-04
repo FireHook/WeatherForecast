@@ -1,18 +1,13 @@
 package com.example.vladyslav.weatherforecast.mvp.view;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.example.vladyslav.weatherforecast.R;
 import com.example.vladyslav.weatherforecast.mvp.presenter.MainPresenter;
-import com.example.vladyslav.weatherforecast.mvp.presenter.MapPresenter;
 
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 public class MainActivity extends MvpAppCompatActivity implements MainView {
 
@@ -26,16 +21,10 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
     }
 
     @Override public void onBackPressed() {
-        int count = getSupportFragmentManager().getBackStackEntryCount();
-        if (count > 1) {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 1)
             super.onBackPressed();
-        } else {
+        else
             finish();
-        }
-    }
-
-    @Override public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
     }
 
     @Override public void openMapScreen() {

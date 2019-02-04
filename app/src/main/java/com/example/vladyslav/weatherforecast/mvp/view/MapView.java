@@ -9,5 +9,6 @@ import com.google.android.gms.maps.model.LatLng;
 public interface MapView extends MvpView {
     void openForecastDetailScreen();
     void drawMarker(LatLng coords);
-    void showToastText(int message);
+    void showError(int message);
+
 }

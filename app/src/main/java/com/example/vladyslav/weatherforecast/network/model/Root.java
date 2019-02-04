@@ -11,7 +11,7 @@ public class Root {
     @SerializedName("cod")     @Expose public String cod;
     @SerializedName("message") @Expose public Double message;
     @SerializedName("cnt")     @Expose public Integer cnt;
-    @SerializedName("list")    @Expose public List<Forecast> list = new ArrayList<Forecast>();
+    @SerializedName("list")    @Expose public List<Forecast> list = new ArrayList<>();
     @SerializedName("city")    @Expose public City city;
 
 }

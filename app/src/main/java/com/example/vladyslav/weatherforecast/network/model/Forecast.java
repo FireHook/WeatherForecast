@@ -9,7 +9,7 @@ import java.util.List;
 public class Forecast {
 
     @SerializedName("sys")     @Expose public Sys sys;
-    @SerializedName("weather") @Expose public List<Weather> weather = new ArrayList<Weather>();
+    @SerializedName("weather") @Expose public List<Weather> weather = new ArrayList<>();
     @SerializedName("main")    @Expose public Main main;
     @SerializedName("wind")    @Expose public Wind wind;
     @SerializedName("rain")    @Expose public Rain rain;

@@ -9,8 +9,7 @@ import timber.log.Timber;
 
 public class MyTimberTree extends Timber.DebugTree {
 
-    @Override
-    protected @Nullable String createStackElementTag(@NotNull StackTraceElement element) {
+    @Override protected @Nullable String createStackElementTag(@NotNull StackTraceElement element) {
 
         return String.format(Locale.getDefault(),
                 "[TIMBER] %s.%s() [#%d]",

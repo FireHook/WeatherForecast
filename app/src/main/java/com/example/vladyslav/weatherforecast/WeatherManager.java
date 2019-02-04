@@ -2,6 +2,8 @@ package com.example.vladyslav.weatherforecast;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 
 import com.example.vladyslav.weatherforecast.mvp.model.ForecastItem;
@@ -35,7 +37,7 @@ public class WeatherManager {
     private Context mApplicationContext;
 
     public WeatherManager(Context applicationContext) {
-        this.mApplicationContext = applicationContext;
+        mApplicationContext = applicationContext;
     }
 
     public Observable<LatLng> getSavedLocation() {
@@ -47,16 +49,11 @@ public class WeatherManager {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CompletableObserver() {
-                    @Override
-                    public void onSubscribe(Disposable d) { }
-
-                    @Override
-                    public void onComplete() {
+                    @Override public void onSubscribe(Disposable d) { }
+                    @Override public void onComplete() {
                         Timber.d("Prefs saved well");
                     }
-
-                    @Override
-                    public void onError(Throwable e) { }
+                    @Override public void onError(Throwable e) { }
                 });
     }
 
@@ -70,10 +67,17 @@ public class WeatherManager {
         });
     }
 
+    public boolean isNetworkAvailable() {
+        ConnectivityManager connManager = (ConnectivityManager) mApplicationContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = null;
+        if (connManager != null) activeNetworkInfo = connManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+    }
+
     private LatLng readLatLngFromPrefs() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mApplicationContext);
-        String latitude = prefs.getString("lat", "50.4501");
-        String longitude = prefs.getString("lng", "30.5234");
+        String latitude = prefs.getString(Utils.LATITUDE_KEY, "50.4501");
+        String longitude = prefs.getString(Utils.LONGITUDE_KEY, "30.5234");
 
         return new LatLng(Double.valueOf(latitude), Double.valueOf(longitude));
     }
@@ -81,59 +85,58 @@ public class WeatherManager {
     private void saveLatLngToPrefs(LatLng coords) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mApplicationContext);
         prefs.edit()
-                .putString("lat", String.valueOf(coords.latitude))
-                .putString("lng", String.valueOf(coords.longitude))
+                .putString(Utils.LATITUDE_KEY, String.valueOf(coords.latitude))
+                .putString(Utils.LONGITUDE_KEY, String.valueOf(coords.longitude))
                 .apply();
     }
 
     private List<Forecast> filterForecasts(List<Forecast> forecastList) {
 
-        List<Forecast> list = new ArrayList<>();
+        List<Forecast> filteredForecasts = new ArrayList<>();
 
         for (Forecast forecast : forecastList) {
 
             try {
+                String trimmedDate = forecast.dtTxt.substring(forecast.dtTxt.lastIndexOf(" ") + 1);
                 if (new Date().after(new SimpleDateFormat("HH:mm").parse("12:00"))) {
-                    if (list.isEmpty()) {
-                        list.add(forecast);
+                    if (filteredForecasts.isEmpty()) {
+                        filteredForecasts.add(forecast);
                     } else {
-                        String trimedDate = forecast.dtTxt.substring(forecast.dtTxt.lastIndexOf(" ") + 1);
-                        if (trimedDate.equals("00:00:00") ||
-                                trimedDate.equals("12:00:00")) {
-                            list.add(forecast);
+                        if (trimmedDate.equals("00:00:00") || trimmedDate.equals("12:00:00")) {
+                            filteredForecasts.add(forecast);
                         }
                     }
                 } else {
-                    String trimedDate = forecast.dtTxt.substring(forecast.dtTxt.lastIndexOf(" ") + 1);
-                    if (trimedDate.equals("00:00:00") ||
-                            trimedDate.equals("12:00:00")) {
-                        list.add(forecast);
+                    if (trimmedDate.equals("00:00:00") || trimmedDate.equals("12:00:00")) {
+                        filteredForecasts.add(forecast);
                     }
                 }
             } catch (ParseException e) { e.printStackTrace(); }
         }
-        return list;
+        return filteredForecasts;
     }
 
     private List<ForecastItem> convertToForecastItems(List<Forecast> sortedForecast, City city) {
-        List<ForecastItem> list = new ArrayList<>();
+        List<ForecastItem> convertedForecasts = new ArrayList<>();
 
-        for (int i = 0; i < sortedForecast.size() - 1; i+=2) {
+        for (int i = 0; i < sortedForecast.size() - 1; i += 2) {
+
             ForecastItem forecastItem = new ForecastItem();
-            SimpleDateFormat monthAndDay = new SimpleDateFormat("MMM d");
-            if (list.isEmpty()) {
+            SimpleDateFormat monthAndDay = new SimpleDateFormat("MMMM d", Locale.US);
+            if (convertedForecasts.isEmpty()) {
                 forecastItem.setDate(monthAndDay.format(Calendar.getInstance().getTime()));
             } else {
-                String trimedDate = sortedForecast.get(i).dtTxt.substring(0, sortedForecast.get(i).dtTxt.indexOf(" "));
-                SimpleDateFormat forma=new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-                Date d = null;
+                String trimmedDate = sortedForecast.get(i).dtTxt.substring(0, sortedForecast.get(i).dtTxt.indexOf(" "));
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                Date date = null;
                 try {
-                    d = forma.parse(trimedDate);
+                    date = dateFormat.parse(trimmedDate);
                 } catch (ParseException e) { e.printStackTrace(); }
 
-                String res = new SimpleDateFormat("EEEE", Locale.US).format(d);
+                String res = new SimpleDateFormat("EEEE", Locale.US).format(date);
                 forecastItem.setDate(res);
             }
+
             forecastItem.setDayTemperature(String.valueOf(sortedForecast.get(i).main.temp.intValue() - 273));
             forecastItem.setNightTemperature(String.valueOf(sortedForecast.get(i+1).main.temp.intValue() - 273));
             String description = sortedForecast.get(i).weather.get(0).description;
@@ -141,8 +144,8 @@ public class WeatherManager {
             forecastItem.setIcon(sortedForecast.get(i).weather.get(0).icon);
             if (city.country != null && city.name != null)
                 forecastItem.setCity(city.name.concat(", ").concat(city.country));
-            list.add(forecastItem);
+            convertedForecasts.add(forecastItem);
         }
-        return list;
+        return convertedForecasts;
     }
 }

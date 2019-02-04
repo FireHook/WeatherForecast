@@ -1,12 +1,13 @@
 package com.example.vladyslav.weatherforecast;
 
-import android.content.Context;
 import android.support.annotation.DrawableRes;
 
 public class Utils {
 
-    @DrawableRes
-    public static int getWeatherIcon(Context context, String weatherConditionCode) {
+    public static final String LATITUDE_KEY = "lat";
+    public static final String LONGITUDE_KEY = "lat";
+
+    @DrawableRes public static int getWeatherIcon(String weatherConditionCode) {
     
         if (weatherConditionCode.equalsIgnoreCase("01d") || weatherConditionCode.equalsIgnoreCase("01n")) return R.drawable.clear_sky;
         if (weatherConditionCode.equalsIgnoreCase("02d") || weatherConditionCode.equalsIgnoreCase("02n")) return R.drawable.few_clouds;

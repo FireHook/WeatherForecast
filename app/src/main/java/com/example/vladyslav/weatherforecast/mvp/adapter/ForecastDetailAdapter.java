@@ -63,7 +63,7 @@ public class ForecastDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         holder.mDayTempText.setText(new StringBuilder().append(forecast.getDayTemperature()).append(degree));
         holder.mNightTempText.setText(new StringBuilder().append(forecast.getNightTemperature()).append(degree));
         holder.mMainDescText.setText(forecast.getDescription());
-        holder.mMainImage.setImageResource(Utils.getWeatherIcon(holder.mMainImage.getContext(), forecast.getIcon()));
+        holder.mMainImage.setImageResource(Utils.getWeatherIcon(forecast.getIcon()));
         holder.mCityText.setText(forecast.getCity());
 
     }
@@ -74,7 +74,7 @@ public class ForecastDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         holder.mSecondaryDayTemp.setText(forecast.getDayTemperature());
         holder.mSecondaryNightTemp.setText(forecast.getNightTemperature());
         holder.mSecondaryDesc.setText(forecast.getDescription());
-        holder.mSecondaryImage.setImageResource(Utils.getWeatherIcon(holder.mSecondaryImage.getContext(), forecast.getIcon()));
+        holder.mSecondaryImage.setImageResource(Utils.getWeatherIcon(forecast.getIcon()));
     }
 
     @Override

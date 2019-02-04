@@ -18,12 +18,12 @@
         android:id="@+id/action_forecast"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
+        android:layout_gravity="end"
         android:src="@drawable/ic_action_forecast"
         app:backgroundTint="@color/actionColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginBottom="40dp"
-        android:layout_marginRight="40dp" />
+        android:layout_marginEnd="40dp" />
 
 </android.support.constraint.ConstraintLayout>
