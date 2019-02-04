@@ -5,7 +5,7 @@ import android.support.annotation.DrawableRes;
 public class Utils {
 
     public static final String LATITUDE_KEY = "lat";
-    public static final String LONGITUDE_KEY = "lat";
+    public static final String LONGITUDE_KEY = "lon";
 
     @DrawableRes public static int getWeatherIcon(String weatherConditionCode) {
     
