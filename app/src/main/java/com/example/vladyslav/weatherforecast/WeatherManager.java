@@ -90,28 +90,34 @@ public class WeatherManager {
                 .apply();
     }
 
-    private List<Forecast> filterForecasts(List<Forecast> forecastList) {
+    private List<Forecast> filterForecasts(List<Forecast> forecastList) throws ParseException {
 
         List<Forecast> filteredForecasts = new ArrayList<>();
+        SimpleDateFormat hoursFormat = new SimpleDateFormat("HH:mm");
 
         for (Forecast forecast : forecastList) {
 
-            try {
-                String trimmedDate = forecast.dtTxt.substring(forecast.dtTxt.lastIndexOf(" ") + 1);
-                if (new Date().after(new SimpleDateFormat("HH:mm").parse("12:00"))) {
-                    if (filteredForecasts.isEmpty()) {
+            String trimmedDate = forecast.dtTxt.substring(forecast.dtTxt.lastIndexOf(" ") + 1);
+
+            if (filteredForecasts.size() == 9) {
+                if (trimmedDate.equals("21:00:00")) {
+                    filteredForecasts.add(forecast);
+                }
+            }
+
+            if (hoursFormat.parse(hoursFormat.format(new Date())).after(hoursFormat.parse("12:00"))) {
+                if (!filteredForecasts.isEmpty()) {
+                    if (trimmedDate.equals("12:00:00") || trimmedDate.equals("00:00:00")) {
                         filteredForecasts.add(forecast);
-                    } else {
-                        if (trimmedDate.equals("00:00:00") || trimmedDate.equals("12:00:00")) {
-                            filteredForecasts.add(forecast);
-                        }
                     }
                 } else {
-                    if (trimmedDate.equals("00:00:00") || trimmedDate.equals("12:00:00")) {
-                        filteredForecasts.add(forecast);
-                    }
+                    filteredForecasts.add(forecast);
                 }
-            } catch (ParseException e) { e.printStackTrace(); }
+            } else {
+                if (trimmedDate.equals("00:00:00") || trimmedDate.equals("12:00:00")) {
+                    filteredForecasts.add(forecast);
+                }
+            }
         }
         return filteredForecasts;
     }

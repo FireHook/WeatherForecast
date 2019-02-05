@@ -5,6 +5,7 @@
     <string name="temperature">Temperature</string>
     <string name="condition">Condition</string>
     <string name="location">Location</string>
+    <string name="day_name">Friday</string>
     <string name="today">Today, %1$S</string>
     <string name="network_error">Turn ON Network Connection</string>
     <string name="cache_error">Cached data error</string>
